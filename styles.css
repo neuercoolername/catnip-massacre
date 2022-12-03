@@ -1,0 +1,22 @@
+html,body {
+    margin: 0;
+    padding: 0;
+}
+
+#intro {
+    background-image: url(images/background_intro.png);
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+    margin: 0 auto;
+    width: 700px;
+    height: 700px;
+}
+
+#canvas {
+    border: 1px solid red;
+    margin: 0 auto;
+    width: 700px;
+    height: 700px;
+
+}
