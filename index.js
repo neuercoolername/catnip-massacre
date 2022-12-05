@@ -8,8 +8,9 @@ let intervalId;
 let frame = 0;
 let score = 0;
 const enemieCatArray = [];
-const turdArray = [];
-let obstaclesArray = []
+// const turdArray = [];
+let obstaclesArray = [];
+const itemArray = [];
 
 const enemieCatData = [
   "images/enemieCat01.png",
@@ -21,74 +22,100 @@ const enemieCatData = [
 // functions
 
 function updateGame() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); 
-  drawBackground(); 
-  player.draw(); 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBackground();
+  player.draw();
   updateEnemieCat();
-  updateScore(); 
-  checkGameOver();
-  updateObstaclesArray()
+  updateScore();
+  // checkGameOver();
+  // updateObstaclesArray()
+  itemUpdater();
 }
 
 function startGame() {
+  document.querySelector("#intro").style.display = "none";
+  document.querySelector("#canvas").style.display = "flex";
+
   drawBackground();
   player.draw();
   intervalId = setInterval(updateGame, 20);
 }
 
-function updateObstaclesArray () {obstaclesArray = enemieCatArray.concat(turdArray)}
+// function updateObstaclesArray () {obstaclesArray = enemieCatArray.concat(turdArray)}
 
 function drawBackground() {
   ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-  document.querySelector("#intro").style.display = "none";
   // document.querySelector('#game-board').style = 'width: 100vw; display: flex; justify-content: center;';
 }
 
 function updateScore() {
-  score = Math.floor(frame / 10); // 1 sec -->12
-  ctx.font = "18px serif";
-  ctx.fillStyle = "black";
-  ctx.fillText(`Score: ${score}`, 350, 50);
+  // score = Math.floor(frame / 10); // 1 sec -->12
+  ctx.font = "20px 'Press Start 2P'";
+  ctx.fillStyle = "white";
+  ctx.fillText(`Score: ${score}`, 450, 40);
 }
 
 function checkGameOver() {
-  const crashed = obstaclesArray.some(function (obstacle) {
-    return crashWith(obstacle);
-  });
+ 
+  stop();
 
-  if (crashed) {
-    stop();
-    console.log("game over");
-
-    const points = Math.floor(frames / 10);
-
-    ctx.font = "35px serif";
-    ctx.fillStyle = "cyan";
-    ctx.fillText(`GAME OVER your score is ${points} `, 20, canvas.height / 2);
-  }
+  const points = Math.floor(frames / 10);
+  setTimeout(() => {
+    document.querySelector("#endScreen").style.display = "flex";
+    document.querySelector("#canvas").style.display = "none";
+    document.querySelector("#endScreen span").textContent = score;
+  }, 1200);
+  // }
 }
 
-function crashWith(obstacle) {
-  return !(
-    player.bottom() < obstacle.top() ||
-    player.top() > obstacle.bottom() ||
-    player.right() < obstacle.left() ||
-    player.left() > obstacle.right()
-  );
+
+
+function itemUpdater() {
+  if (frame % 180 === 0) {
+    const randomX = Math.floor(Math.random() * 600);
+    const randomY = Math.floor(Math.random() * 600);
+
+    itemArray.push(new Catnip(randomX, randomY));
+  }
+  if (frame % 180 === 0) {
+    const randomX = Math.floor(Math.random() * 600);
+    const randomY = Math.floor(Math.random() * 600);
+
+    itemArray.push(new PowerDrink(randomX, randomY));
+  }
+
+  for (i = 0; i < itemArray.length; i++) {
+    itemArray[i].draw();
+    itemArray[i].checkIfCollected();
+    if (itemArray[i].checkIfCollected()) {
+      itemArray.splice([i], 1);
+    }
+  }
 }
 
 function updateEnemieCat() {
   for (i = 0; i < enemieCatArray.length; i++) {
-    enemieCatArray[i].move();
     enemieCatArray[i].draw();
+
+    if (enemieCatArray[i].isCat) {
+      enemieCatArray[i].move();
+    }
     if (enemieCatArray[i].isPooper) {
       enemieCatArray[i].poop();
     }
+    if (enemieCatArray[i].checkIfCollision()) {
+      console.log("found collision");
+      if (player.powerUp === "powerDrink") {
+        enemieCatArray.splice([i], 1);
+      } else {
+        checkGameOver();
+      }
+    }
   }
 
-  for (i = 0; i < turdArray.length; i++) {
-    turdArray[i].draw();
-  }
+  // for (i = 0; i < turdArray.length; i++) {
+  //   turdArray[i].draw();
+  // }
 
   frame += 1;
   if (frame % 360 === 0) {
@@ -110,6 +137,9 @@ class CatCharacter {
   constructor() {
     this.x = 220;
     this.y = canvas.height - 70;
+    this.width = 42;
+    this.height = 50;
+    this.powerUp = "";
 
     const newImage = new Image();
     newImage.addEventListener("load", () => {
@@ -118,19 +148,39 @@ class CatCharacter {
     newImage.src = "/images/mainCatCharacter.png";
   }
   draw() {
-    ctx.drawImage(this.img, this.x, this.y, 50, 50);
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  }
+  changeImage(src, width, height, powerUp) {
+    const newImage = new Image();
+    newImage.addEventListener("load", () => {
+      this.img = newImage;
+    });
+    newImage.src = src;
+    this.width = width;
+    this.height = height;
+    
+      this.powerUp = powerUp;
+    
   }
   moveLeft() {
-    this.x -= 15;
+    if (this.x > 0) {
+      this.x -= 15;
+    }
   }
   moveRight() {
-    this.x += 15;
+    if (this.x < 670) {
+      this.x += 15;
+    }
   }
   moveUp() {
-    this.y -= 15;
+    if (this.y > 0) {
+      this.y -= 15;
+    }
   }
   moveDown() {
-    this.y += 15;
+    if (this.y < 650) {
+      this.y += 15;
+    }
   }
   left() {
     return this.x - 10;
@@ -148,11 +198,11 @@ class CatCharacter {
 
 player = new CatCharacter();
 
-
 class EnemieCat {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.isCat = true;
   }
   draw() {
     if (this.img) {
@@ -171,6 +221,18 @@ class EnemieCat {
   bottom() {
     return this.y + 10;
   }
+  checkIfCollision() {
+    if (
+      !(
+        player.bottom() < this.top() ||
+        player.top() > this.bottom() ||
+        player.right() < this.left() ||
+        player.left() > this.right()
+      )
+    ) {
+      return true;
+    }
+  }
 }
 
 class Jumper extends EnemieCat {
@@ -181,6 +243,11 @@ class Jumper extends EnemieCat {
       this.img = newImage;
     });
     newImage.src = "/images/enemieCat01.png";
+  }
+  draw() {
+    if (this.img) {
+      ctx.drawImage(this.img, this.x, this.y, 53, 50);
+    }
   }
   move() {
     let randomDirection = Math.floor(Math.random() * 4);
@@ -215,18 +282,49 @@ class Creeper extends EnemieCat {
     });
     newImage.src = "/images/enemieCat02.png";
   }
+  draw() {
+    if (this.img) {
+      ctx.drawImage(this.img, this.x, this.y, 38, 50);
+    }
+  }
   move() {
     if (player.y > this.y) {
-      this.y += 1;
+      if (player.powerUp === "powerDrink") {
+        this.y -= 1;
+      }
+      else{
+        this.y += 1;
+
+      }
     }
+
     if (player.y < this.y) {
-      this.y -= 1;
+      if (player.powerUp === "powerDrink") {
+        this.y += 1;
+      }
+      else {
+        this.y -= 1;
+
+      }
     }
     if (player.x > this.x) {
-      this.x += 1;
+      if (player.powerUp === "powerDrink") {
+        this.x -= 1;
+      }
+      else{
+        this.x += 1;
+
+      }
     }
     if (player.x < this.x) {
-      this.x -= 1;
+      if (player.powerUp === "powerDrink") {
+        this.x += 1;
+      }
+      else{
+        this.x -= 1;
+
+      }
+      
     }
   }
 }
@@ -241,13 +339,18 @@ class Pooper extends EnemieCat {
     });
     newImage.src = "/images/enemieCat04.png";
   }
+  draw() {
+    if (this.img) {
+      ctx.drawImage(this.img, this.x, this.y, 33, 50);
+    }
+  }
   move() {
     this.y += 1;
   }
   poop() {
     if (frame % 300 === 0) {
-      turdArray.push(new Poo(this.x, this.y));
-      turdArray.forEach((turd) => turd.draw());
+      enemieCatArray.push(new Poo(this.x, this.y));
+      enemieCatArray.forEach((turd) => turd.draw());
     }
   }
 }
@@ -264,7 +367,7 @@ class Poo {
   }
   draw() {
     if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 20, 20);
+      ctx.drawImage(this.img, this.x, this.y, 25, 25);
     }
   }
   left() {
@@ -278,6 +381,115 @@ class Poo {
   }
   bottom() {
     return this.y + 15;
+  }
+  checkIfCollision() {
+    if (
+      !(
+        player.bottom() < this.top() ||
+        player.top() > this.bottom() ||
+        player.right() < this.left() ||
+        player.left() > this.right()
+      )
+    ) {
+      return true;
+    }
+  }
+}
+
+class Catnip {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    const newImage = new Image();
+    newImage.addEventListener("load", () => {
+      this.img = newImage;
+    });
+    newImage.src = "/images/catnip.png";
+  }
+  draw() {
+    if (this.img) {
+      ctx.drawImage(this.img, this.x, this.y, 50, 50);
+    }
+  }
+  checkIfCollected() {
+    if (
+      !(
+        player.bottom() < this.top() ||
+        player.top() > this.bottom() ||
+        player.right() < this.left() ||
+        player.left() > this.right()
+      )
+    ) {
+      score += 50;
+      return true;
+    }
+  }
+
+  left() {
+    return this.x - 15;
+  }
+  right() {
+    return this.x + 15;
+  }
+  top() {
+    return this.y - 15;
+  }
+  bottom() {
+    return this.y + 15;
+  }
+}
+
+class PowerUp {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  draw() {
+    if (this.img) {
+      ctx.drawImage(this.img, this.x, this.y, 50, 50);
+    }
+  }
+
+  left() {
+    return this.x - 15;
+  }
+  right() {
+    return this.x + 15;
+  }
+  top() {
+    return this.y - 15;
+  }
+  bottom() {
+    return this.y + 15;
+  }
+}
+
+class PowerDrink extends PowerUp {
+  constructor(x, y) {
+    super(x, y);
+    const newImage = new Image();
+    newImage.addEventListener("load", () => {
+      this.img = newImage;
+    });
+    newImage.src = "/images/powerUpDrink.png";
+  }
+  checkIfCollected() {
+    if (
+      !(
+        player.bottom() < this.top() ||
+        player.top() > this.bottom() ||
+        player.right() < this.left() ||
+        player.left() > this.right()
+      )
+    ) {
+      score += 50;
+      player.changeImage("/images/catPoweredDrink.png", 84, 100, "powerDrink");
+      setTimeout(()=>{
+      player.changeImage("/images/mainCatCharacter.png", 42, 50, "");
+
+      },10000)
+      return true;
+    }
   }
 }
 
@@ -305,3 +517,13 @@ document.addEventListener("keydown", (event) => {
       break;
   }
 });
+
+document.getElementById("startBtn").addEventListener("mouseover", () => {
+  document.getElementById("intro").style.backgroundColor = "red";
+});
+document.getElementById("startBtn").addEventListener("mouseout", () => {
+  document.getElementById("intro").style.backgroundColor = "transparent";
+});
+document
+  .getElementById("restartBtn")
+  .addEventListener("click", () => location.reload());
