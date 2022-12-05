@@ -15,15 +15,20 @@
   </head>
   <body>
     <div id="intro">
+        <div id="imgDiv">
+            <img id="introImage" src="/images/background_intro.png" alt="">
+
+        </div>
       <h1 id="headline">CATNIP MASSACRE</h1>
       <button id="startBtn">START</button>
     </div>
     <canvas id="canvas" width="700" height="700"></canvas>
     <div id="endScreen">
-        <h1>You lost the game. Your score:<span>0</span></h1>
+        <h1>GAME OVER</h1>
+        <p>Your score:<span>0</span></p>
         <button id="restartBtn">Restart</button>
     </div>
 
-    <script src="index.js"></script>
+    <script src="index.js" type="module"></script>
   </body>
 </html>

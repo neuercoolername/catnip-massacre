@@ -1,23 +1,20 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+import {EnemieCat,Jumper,Creeper,Eater,Pooper,Poo} from './enemieCatClasses.js'
+import {Catnip,PowerDrink,PowerUp} from './itemClasses.js'
+
+
+export const canvas = document.getElementById("canvas");
+export const ctx = canvas.getContext("2d");
 
 const backgroundImage = new Image();
 backgroundImage.src = "/images/background game.png";
 
 let intervalId;
-let frame = 0;
-let score = 0;
-const enemieCatArray = [];
-// const turdArray = [];
-let obstaclesArray = [];
-const itemArray = [];
+export let frame = 0;
+export let score = 0;
+export const enemieCatArray = [];
+export const itemArray = [];
+const enemieCatClasses = [/* Jumper, Creeper, Pooper, */Eater];
 
-const enemieCatData = [
-  "images/enemieCat01.png",
-  "images/enemieCat02.png",
-  "images/enemieCat03.png",
-  "images/enemieCat04.png",
-];
 
 // functions
 
@@ -27,10 +24,59 @@ function updateGame() {
   player.draw();
   updateEnemieCat();
   updateScore();
-  // checkGameOver();
-  // updateObstaclesArray()
   itemUpdater();
+  // findNearestItem(350)
+  // console.log(findNearestItem(177))
 }
+
+export function findNearestItem(xValue){
+let smallestNumber = 700
+let correspondingNumber = 0
+let newArr = [smallestNumber,correspondingNumber]
+if(itemArray.length>0){
+  for(let i = 0; i<itemArray.length;i++){
+    if(Math.abs(itemArray[i].x -xValue) < smallestNumber){
+      smallestNumber = itemArray[i].x
+      correspondingNumber = itemArray[i].y
+      newArr = [smallestNumber,correspondingNumber]
+    }
+    
+  }
+  return newArr
+}
+
+// console.log(newArr)
+
+
+// //  console.log(itemArray)
+//   let xArr = []
+//   // let yArr = []
+//   let nearestX
+//   // let nearestY
+//   for(let i=0;i<itemArray.length;i++){
+//     xArr.push(itemArray[i].x)
+    
+//   }
+//   if(xArr.length > 0){
+//     nearestX = xArr.reduce((prev, curr) => Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev);
+
+//   }
+  // for(let i=0;i<itemArray.length;i++){
+  //   yArr.push(itemArray[i].y)
+    
+  // }
+  // if(yArr.length > 0){
+  //   nearestY = yArr.reduce((prev, curr) => Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev);
+
+  // }
+
+//  return [nearestX]
+}
+
+
+export function upTickScore(){
+  score += 50
+} 
 
 function startGame() {
   document.querySelector("#intro").style.display = "none";
@@ -41,15 +87,12 @@ function startGame() {
   intervalId = setInterval(updateGame, 20);
 }
 
-// function updateObstaclesArray () {obstaclesArray = enemieCatArray.concat(turdArray)}
 
 function drawBackground() {
   ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-  // document.querySelector('#game-board').style = 'width: 100vw; display: flex; justify-content: center;';
 }
 
 function updateScore() {
-  // score = Math.floor(frame / 10); // 1 sec -->12
   ctx.font = "20px 'Press Start 2P'";
   ctx.fillStyle = "white";
   ctx.fillText(`Score: ${score}`, 450, 40);
@@ -84,7 +127,7 @@ function itemUpdater() {
     itemArray.push(new PowerDrink(randomX, randomY));
   }
 
-  for (i = 0; i < itemArray.length; i++) {
+  for (let i = 0; i < itemArray.length; i++) {
     itemArray[i].draw();
     itemArray[i].checkIfCollected();
     if (itemArray[i].checkIfCollected()) {
@@ -94,7 +137,7 @@ function itemUpdater() {
 }
 
 function updateEnemieCat() {
-  for (i = 0; i < enemieCatArray.length; i++) {
+  for (let i = 0; i < enemieCatArray.length; i++) {
     enemieCatArray[i].draw();
 
     if (enemieCatArray[i].isCat) {
@@ -104,7 +147,6 @@ function updateEnemieCat() {
       enemieCatArray[i].poop();
     }
     if (enemieCatArray[i].checkIfCollision()) {
-      console.log("found collision");
       if (player.powerUp === "powerDrink") {
         enemieCatArray.splice([i], 1);
       } else {
@@ -113,9 +155,6 @@ function updateEnemieCat() {
     }
   }
 
-  // for (i = 0; i < turdArray.length; i++) {
-  //   turdArray[i].draw();
-  // }
 
   frame += 1;
   if (frame % 360 === 0) {
@@ -183,317 +222,21 @@ class CatCharacter {
     }
   }
   left() {
-    return this.x - 10;
+    return this.x - this.height / 3;
   }
   right() {
-    return this.x + 10;
+    return this.x + this.height / 3;
   }
   top() {
-    return this.y - 10;
+    return this.y - this.height / 3;
   }
   bottom() {
-    return this.y + 10;
+    return this.y + this.height /1.3 ;
   }
 }
 
-player = new CatCharacter();
+export const player = new CatCharacter();
 
-class EnemieCat {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.isCat = true;
-  }
-  draw() {
-    if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 50, 50);
-    }
-  }
-  left() {
-    return this.x - 10;
-  }
-  right() {
-    return this.x + 10;
-  }
-  top() {
-    return this.y - 10;
-  }
-  bottom() {
-    return this.y + 10;
-  }
-  checkIfCollision() {
-    if (
-      !(
-        player.bottom() < this.top() ||
-        player.top() > this.bottom() ||
-        player.right() < this.left() ||
-        player.left() > this.right()
-      )
-    ) {
-      return true;
-    }
-  }
-}
-
-class Jumper extends EnemieCat {
-  constructor(x, y) {
-    super(x, y);
-    const newImage = new Image();
-    newImage.addEventListener("load", () => {
-      this.img = newImage;
-    });
-    newImage.src = "/images/enemieCat01.png";
-  }
-  draw() {
-    if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 53, 50);
-    }
-  }
-  move() {
-    let randomDirection = Math.floor(Math.random() * 4);
-    switch (randomDirection) {
-      case 0:
-        this.y += 5;
-
-        break;
-      case 1:
-        this.y -= 5;
-
-        break;
-
-      case 2:
-        this.x += 5;
-
-        break;
-      case 3:
-        this.x -= 5;
-
-        break;
-    }
-  }
-}
-
-class Creeper extends EnemieCat {
-  constructor(x, y) {
-    super(x, y);
-    const newImage = new Image();
-    newImage.addEventListener("load", () => {
-      this.img = newImage;
-    });
-    newImage.src = "/images/enemieCat02.png";
-  }
-  draw() {
-    if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 38, 50);
-    }
-  }
-  move() {
-    if (player.y > this.y) {
-      if (player.powerUp === "powerDrink") {
-        this.y -= 1;
-      }
-      else{
-        this.y += 1;
-
-      }
-    }
-
-    if (player.y < this.y) {
-      if (player.powerUp === "powerDrink") {
-        this.y += 1;
-      }
-      else {
-        this.y -= 1;
-
-      }
-    }
-    if (player.x > this.x) {
-      if (player.powerUp === "powerDrink") {
-        this.x -= 1;
-      }
-      else{
-        this.x += 1;
-
-      }
-    }
-    if (player.x < this.x) {
-      if (player.powerUp === "powerDrink") {
-        this.x += 1;
-      }
-      else{
-        this.x -= 1;
-
-      }
-      
-    }
-  }
-}
-
-class Pooper extends EnemieCat {
-  constructor(x, y) {
-    super(x, y);
-    this.isPooper = true;
-    const newImage = new Image();
-    newImage.addEventListener("load", () => {
-      this.img = newImage;
-    });
-    newImage.src = "/images/enemieCat04.png";
-  }
-  draw() {
-    if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 33, 50);
-    }
-  }
-  move() {
-    this.y += 1;
-  }
-  poop() {
-    if (frame % 300 === 0) {
-      enemieCatArray.push(new Poo(this.x, this.y));
-      enemieCatArray.forEach((turd) => turd.draw());
-    }
-  }
-}
-
-class Poo {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    const newImage = new Image();
-    newImage.addEventListener("load", () => {
-      this.img = newImage;
-    });
-    newImage.src = "/images/turd.png";
-  }
-  draw() {
-    if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 25, 25);
-    }
-  }
-  left() {
-    return this.x - 15;
-  }
-  right() {
-    return this.x + 15;
-  }
-  top() {
-    return this.y - 15;
-  }
-  bottom() {
-    return this.y + 15;
-  }
-  checkIfCollision() {
-    if (
-      !(
-        player.bottom() < this.top() ||
-        player.top() > this.bottom() ||
-        player.right() < this.left() ||
-        player.left() > this.right()
-      )
-    ) {
-      return true;
-    }
-  }
-}
-
-class Catnip {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    const newImage = new Image();
-    newImage.addEventListener("load", () => {
-      this.img = newImage;
-    });
-    newImage.src = "/images/catnip.png";
-  }
-  draw() {
-    if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 50, 50);
-    }
-  }
-  checkIfCollected() {
-    if (
-      !(
-        player.bottom() < this.top() ||
-        player.top() > this.bottom() ||
-        player.right() < this.left() ||
-        player.left() > this.right()
-      )
-    ) {
-      score += 50;
-      return true;
-    }
-  }
-
-  left() {
-    return this.x - 15;
-  }
-  right() {
-    return this.x + 15;
-  }
-  top() {
-    return this.y - 15;
-  }
-  bottom() {
-    return this.y + 15;
-  }
-}
-
-class PowerUp {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  draw() {
-    if (this.img) {
-      ctx.drawImage(this.img, this.x, this.y, 50, 50);
-    }
-  }
-
-  left() {
-    return this.x - 15;
-  }
-  right() {
-    return this.x + 15;
-  }
-  top() {
-    return this.y - 15;
-  }
-  bottom() {
-    return this.y + 15;
-  }
-}
-
-class PowerDrink extends PowerUp {
-  constructor(x, y) {
-    super(x, y);
-    const newImage = new Image();
-    newImage.addEventListener("load", () => {
-      this.img = newImage;
-    });
-    newImage.src = "/images/powerUpDrink.png";
-  }
-  checkIfCollected() {
-    if (
-      !(
-        player.bottom() < this.top() ||
-        player.top() > this.bottom() ||
-        player.right() < this.left() ||
-        player.left() > this.right()
-      )
-    ) {
-      score += 50;
-      player.changeImage("/images/catPoweredDrink.png", 84, 100, "powerDrink");
-      setTimeout(()=>{
-      player.changeImage("/images/mainCatCharacter.png", 42, 50, "");
-
-      },10000)
-      return true;
-    }
-  }
-}
-
-const enemieCatClasses = [Jumper, Creeper, Pooper];
 
 // event listener / player controler
 
@@ -518,12 +261,38 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-document.getElementById("startBtn").addEventListener("mouseover", () => {
-  document.getElementById("intro").style.backgroundColor = "red";
-});
-document.getElementById("startBtn").addEventListener("mouseout", () => {
-  document.getElementById("intro").style.backgroundColor = "transparent";
-});
+// document.getElementById("startBtn").addEventListener("mouseover", () => {
+//   document.getElementById("intro").style.backgroundColor = "red";
+// });
+// document.getElementById("startBtn").addEventListener("mouseout", () => {
+//   document.getElementById("intro").style.backgroundColor = "transparent";
+// });
 document
   .getElementById("restartBtn")
   .addEventListener("click", () => location.reload());
+
+
+let rotation = 0
+let rotationRel = rotation % 360
+let rounds = 0
+const interValStart = setInterval(()=>{
+
+  if(rotationRel<=360){
+  rotation += 2
+    
+    document.getElementById("introImage").style.WebkitTransitionDuration='0.1ms';
+  document.getElementById("introImage").style.webkitTransform = `rotate(${rotation}deg)`
+  document.getElementById("introImage").animate({
+    width: '700px',
+    height: "700px", 
+     }, 50000 );
+  }
+  if(rotation % 360 === 0){
+    rounds++
+  }
+  if(rounds === 1) {
+    clearInterval(interValStart)
+  }
+ 
+ 
+},10)
