@@ -18,7 +18,7 @@ export class Catnip {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "/images/catnip.png";
+    newImage.src = "./images/catnip.png";
   }
   draw() {
     if (this.img) {
@@ -102,7 +102,7 @@ export class PowerDrink extends PowerUp {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "/images/powerUpDrink.png";
+    newImage.src = "./images/powerUpDrink.png";
   }
   checkIfCollected() {
     if (
@@ -114,11 +114,11 @@ export class PowerDrink extends PowerUp {
       )
     ) {
       upTickScore();
-      player.changeImage("/images/catPoweredDrink.png", 84, 100, "powerDrink");
+      player.changeImage("./images/catPoweredDrink.png", 84, 100, "powerDrink");
     animationPowerUp()
 
       setTimeout(() => {
-        player.changeImage("/images/mainCatCharacter.png", 42, 50, "");
+        player.changeImage("./images/mainCatCharacter.png", 42, 50, "");
       }, 15000);
       this.isCollected = true;
     }
