@@ -3,11 +3,9 @@ import {
   canvas,
   ctx,
   enemieCatArray,
-  upTickScore,
   catSoundItem,
-  animationPowerUp,
+  animationPowerUp,upTickScore
 } from "./index.js";
-
 
 export class Catnip {
   constructor(x, y) {
@@ -27,34 +25,33 @@ export class Catnip {
   }
 
   checkIfCollected() {
+    if (
+      !(
+        player.bottom() < this.top() ||
+        player.top() > this.bottom() ||
+        player.right() < this.left() ||
+        player.left() > this.right()
+      )
+    ) {
+      catSoundItem.play();
+      upTickScore();
+      this.isCollected = true;
+    }
+  }
+  checkIfCollectedByEnemie() {
+    for (let i = 0; i < enemieCatArray.length; i++) {
       if (
         !(
-          player.bottom() < this.top() ||
-          player.top() > this.bottom() ||
-          player.right() < this.left() ||
-          player.left() > this.right()
+          enemieCatArray[i].bottom() < this.top() ||
+          enemieCatArray[i].top() > this.bottom() ||
+          enemieCatArray[i].right() < this.left() ||
+          enemieCatArray[i].left() > this.right()
         )
       ) {
-        catSoundItem.play();
-        upTickScore();
         this.isCollected = true;
       }
-
+    }
   }
-  checkIfCollectedByEnemie(){
-    for (let i = 0; i < enemieCatArray.length; i++) {
-          if (
-            !(
-    enemieCatArray[i].bottom() < this.top() ||
-              enemieCatArray[i].top() > this.bottom() ||
-              enemieCatArray[i].right() < this.left() ||
-              enemieCatArray[i].left() > this.right()
-            )
-          ){
-            this.isCollected = true
-          }
-
-  }}
   left() {
     return this.x - 35;
   }
@@ -115,28 +112,27 @@ export class PowerDrink extends PowerUp {
     ) {
       upTickScore();
       player.changeImage("./images/catPoweredDrink.png", 84, 100, "powerDrink");
-    animationPowerUp()
+      animationPowerUp();
 
       setTimeout(() => {
         player.changeImage("./images/mainCatCharacter.png", 42, 50, "");
       }, 15000);
       this.isCollected = true;
     }
-   
-    }
-  
-  checkIfCollectedByEnemie(){
-    for (let i = 0; i < enemieCatArray.length; i++) {
-          if (
-            !(
-    enemieCatArray[i].bottom() < this.top() ||
-              enemieCatArray[i].top() > this.bottom() ||
-              enemieCatArray[i].right() < this.left() ||
-              enemieCatArray[i].left() > this.right()
-            )
-          ){
-            this.isCollected = true
-          }
+  }
 
-  }}
+  checkIfCollectedByEnemie() {
+    for (let i = 0; i < enemieCatArray.length; i++) {
+      if (
+        !(
+          enemieCatArray[i].bottom() < this.top() ||
+          enemieCatArray[i].top() > this.bottom() ||
+          enemieCatArray[i].right() < this.left() ||
+          enemieCatArray[i].left() > this.right()
+        )
+      ) {
+        this.isCollected = true;
+      }
+    }
+  }
 }

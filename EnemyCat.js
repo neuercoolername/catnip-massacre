@@ -2,13 +2,14 @@ import {
   canvas,
   ctx,
   player,
-  frame,
   enemieCatArray,
-  findNearestItem,
   itemArray,
   catNipArray,
   catFightSound,
+  findNearestItem,frame,
+
 } from "./index.js";
+
 
 class EnemieCat {
   constructor(x, y) {
@@ -48,7 +49,14 @@ class EnemieCat {
           this.fightCloudImg = fightCloud;
         });
         fightCloud.src = "./images/fightCloud.png";
+        console.log(typeof this.fightCloudImg,this.fightCloudImg)
         ctx.drawImage(this.fightCloudImg, this.x - 100, this.y - 50, 300, 171);
+
+        // const fightCloud = new Image();
+
+        // fightCloud.addEventListener("load", (e) => {
+        //   ctx.drawImage(fightCloud, this.x - 100, this.y - 50, 300, 171);
+        // });
       }
       catFightSound.play();
 

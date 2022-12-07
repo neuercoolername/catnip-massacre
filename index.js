@@ -4,11 +4,10 @@ import { Catnip, PowerDrink, PowerUp } from "./Item.js";
 export const canvas = document.getElementById("canvas");
 export const ctx = canvas.getContext("2d");
 
-const backgroundImage = new Image();
+export const backgroundImage = new Image();
 backgroundImage.src = "./images/background game.png";
 
 let intervalId;
-export let frame = 0;
 export let score = 0;
 export const enemieCatArray = [];
 export const catNipArray = [];
@@ -22,7 +21,10 @@ backGroundMusic.loop = true;
 
 /* game functions */
 
-function updateGame() {
+export let frame = 0;
+
+
+export function updateGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
   player.draw();
@@ -31,140 +33,142 @@ function updateGame() {
   itemUpdater();
   catNitUpdater();
 }
-
 export function findNearestItem(xValue) {
-  let smallestNumber = 700;
-  let correspondingNumber = 0;
-  let newArr = [smallestNumber, correspondingNumber];
-  if (catNipArray.length > 0) {
+    let smallestNumber = 700;
+    let correspondingNumber = 0;
+    let newArr = [smallestNumber, correspondingNumber];
+    if (catNipArray.length > 0) {
+      for (let i = 0; i < catNipArray.length; i++) {
+        if (Math.abs(catNipArray[i].x - xValue) < smallestNumber) {
+          smallestNumber = catNipArray[i].x;
+          correspondingNumber = catNipArray[i].y;
+          newArr = [smallestNumber, correspondingNumber];
+        }
+      }
+      return newArr;
+    }
+  }
+  
+  export function upTickScore() {
+    score += 50;
+  }
+  
+  function startGame() {
+    document.querySelector("#intro").style.display = "none";
+    document.querySelector("#canvas").style.display = "flex";
+  
+    drawBackground();
+    player.draw();
+    intervalId = setInterval(updateGame, 20);
+  }
+  
+  function drawBackground() {
+    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+  }
+  
+  function updateScore() {
+    ctx.font = "20px 'Press Start 2P'";
+    ctx.fillStyle = "white";
+    ctx.fillText(`Score: ${score}`, 450, 40);
+  }
+  
+  function checkGameOver() {
+    stop();
+  
+    const points = Math.floor(frames / 10);
+    setTimeout(() => {
+      document.querySelector("#endScreen").style.display = "flex";
+      document.querySelector("#canvas").style.display = "none";
+      document.querySelector("#endScreen span").textContent = score;
+    }, 2500);
+    // }
+  }
+  
+  function catNitUpdater() {
+    if (frame % 180 === 0) {
+      const randomX = Math.floor(Math.random() * 600);
+      const randomY = Math.floor(Math.random() * 600);
+  
+      catNipArray.push(new Catnip(randomX, randomY));
+    }
+  
     for (let i = 0; i < catNipArray.length; i++) {
-      if (Math.abs(catNipArray[i].x - xValue) < smallestNumber) {
-        smallestNumber = catNipArray[i].x;
-        correspondingNumber = catNipArray[i].y;
-        newArr = [smallestNumber, correspondingNumber];
-      }
-    }
-    return newArr;
-  }
-}
-
-export function upTickScore() {
-  score += 50;
-}
-
-function startGame() {
-  document.querySelector("#intro").style.display = "none";
-  document.querySelector("#canvas").style.display = "flex";
-
-  drawBackground();
-  player.draw();
-  intervalId = setInterval(updateGame, 20);
-}
-
-function drawBackground() {
-  ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-}
-
-function updateScore() {
-  ctx.font = "20px 'Press Start 2P'";
-  ctx.fillStyle = "white";
-  ctx.fillText(`Score: ${score}`, 450, 40);
-}
-
-function checkGameOver() {
-  stop();
-
-  const points = Math.floor(frames / 10);
-  setTimeout(() => {
-    document.querySelector("#endScreen").style.display = "flex";
-    document.querySelector("#canvas").style.display = "none";
-    document.querySelector("#endScreen span").textContent = score;
-  }, 2500);
-  // }
-}
-
-function catNitUpdater() {
-  if (frame % 180 === 0) {
-    const randomX = Math.floor(Math.random() * 600);
-    const randomY = Math.floor(Math.random() * 600);
-
-    catNipArray.push(new Catnip(randomX, randomY));
-  }
-
-  for (let i = 0; i < catNipArray.length; i++) {
-    catNipArray[i].draw();
-    catNipArray[i].checkIfCollected();
-    catNipArray[i].checkIfCollectedByEnemie();
-    if (catNipArray[i].isCollected) {
-      catNipArray.splice([i], 1);
-    }
-  }
-}
-
-function itemUpdater() {
-  if (frame % 1800 === 0) {
-    const randomX = Math.floor(Math.random() * 600);
-    const randomY = Math.floor(Math.random() * 600);
-
-    itemArray.push(new PowerDrink(randomX, randomY));
-  }
-
-  for (let i = 0; i < itemArray.length; i++) {
-    itemArray[i].draw();
-    itemArray[i].checkIfCollected();
-    // itemArray[i].checkIfCollectedByEnemie();
-    if (itemArray[i].isCollected) {
-      itemArray.splice([i], 1);
-    }
-  }
-}
-
-function updateEnemieCat() {
-  for (let i = 0; i < enemieCatArray.length; i++) {
-    enemieCatArray[i].draw();
-
-    if (enemieCatArray[i].isCat) {
-      enemieCatArray[i].move();
-    }
-    if (enemieCatArray[i].isPooper) {
-      enemieCatArray[i].poop();
-    }
-    if (enemieCatArray[i].checkIfCollision()) {
-      if (player.powerUp === "powerDrink") {
-        score += 100;
-        enemieCatArray.splice([i], 1);
-      } else {
-        checkGameOver();
+      catNipArray[i].draw();
+      catNipArray[i].checkIfCollected();
+      catNipArray[i].checkIfCollectedByEnemie();
+      if (catNipArray[i].isCollected) {
+        catNipArray.splice([i], 1);
       }
     }
   }
-
-  frame += 1;
-  if (frame % 360 === 0) {
-    spawnEnemieCat();
-
+  
+  function itemUpdater() {
+    if (frame % 1800 === 0) {
+      const randomX = Math.floor(Math.random() * 600);
+      const randomY = Math.floor(Math.random() * 600);
+  
+      itemArray.push(new PowerDrink(randomX, randomY));
+    }
+  
+    for (let i = 0; i < itemArray.length; i++) {
+      itemArray[i].draw();
+      itemArray[i].checkIfCollected();
+      if (itemArray[i].isCollected) {
+        itemArray.splice([i], 1);
+      }
+    }
   }
-}
-
-function spawnEnemieCat() {
-  const randomX = Math.floor(Math.random() * 600);
-  const randomY = Math.floor(Math.random() * 600);
-  const randomClass = Math.floor(Math.random() * enemieCatClasses.length);
-  if (
-    Math.abs(randomX - player.x) > 100 &&
-    Math.abs(randomY - player.y) > 100
-  ) {
-    enemieCatArray.push(new enemieCatClasses[randomClass](randomX, randomY));
-  } else {
-    spawnEnemieCat();
+  
+  function updateEnemieCat() {
+    for (let i = 0; i < enemieCatArray.length; i++) {
+      enemieCatArray[i].draw();
+  
+      if (enemieCatArray[i].isCat) {
+        enemieCatArray[i].move();
+      }
+      if (enemieCatArray[i].isPooper) {
+        enemieCatArray[i].poop();
+      }
+      if (enemieCatArray[i].checkIfCollision()) {
+        if (player.powerUp === "powerDrink") {
+          score += 100;
+          enemieCatArray.splice([i], 1);
+        } else {
+          checkGameOver();
+        }
+      }
+    }
+  
+    frame += 1;
+    if (frame % 360 === 0) {
+      spawnEnemieCat();
+  
+    }
   }
-}
+  
+  function spawnEnemieCat() {
+    const randomX = Math.floor(Math.random() * 600);
+    const randomY = Math.floor(Math.random() * 600);
+    const randomClass = Math.floor(Math.random() * enemieCatClasses.length);
+    if (
+      Math.abs(randomX - player.x) > 100 &&
+      Math.abs(randomY - player.y) > 100
+    ) {
+      enemieCatArray.push(new enemieCatClasses[randomClass](randomX, randomY));
+    } else {
+      spawnEnemieCat();
+    }
+  }
+  
+  
+  
+  function stop() {
+    clearInterval(intervalId);
+  }
+
+  export {stop,spawnEnemieCat,updateEnemieCat,itemUpdater,catNitUpdater,checkGameOver,updateScore,drawBackground,startGame}
 
 
-
-function stop() {
-  clearInterval(intervalId);
-}
 
 /* main Character class */
 
@@ -324,7 +328,6 @@ function animateIntroStart() {
   }, 10);
 }
 
-// rewrite this as a canvas thing, then the positioning will be no problem
 
 export function animationPowerUp() {
   let one = document.getElementById("animationPowerUpImgOne");
@@ -372,3 +375,40 @@ export function animationPowerUp() {
   // setTimeOut to terminate the interval of first image
   // setTimteOut to draw second image
 }
+
+
+// export function animationPowerUp() {
+//   let one = document.getElementById("animationPowerUpImgOne");
+//   let two = document.getElementById("animationPowerUpImgTwo");
+//   let three = document.getElementById("animationPowerUpImgThree");
+//   let four = document.getElementById("animationPowerUpImgFour");
+//   one.style.display = "flex";
+//   setTimeout(() => {
+//     two.style.display = "block";
+//   }, 700);
+//   setTimeout(() => {
+//     one.style.display = "none";
+//   }, 700);
+//   setTimeout(() => {
+//     two.style.display = "none";
+//   }, 1400);
+//   setTimeout(() => {
+//     three.style.display = "block";
+//   }, 1400);
+//   setTimeout(() => {
+//     three.style.display = "none";
+//   }, 2100);
+//   setTimeout(() => {
+//     three.style.display = "block";
+//   }, 1400);
+//   setTimeout(() => {
+//     three.style.display = "none";
+//   }, 2100);
+//   setTimeout(() => {
+//     four.style.display = "block";
+//   }, 2100);
+//   setTimeout(() => {
+//     four.style.display = "none";
+//   }, 2800);
+  
+// }
