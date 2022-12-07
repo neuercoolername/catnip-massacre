@@ -1,11 +1,4 @@
-import {
-  EnemieCat,
-  Jumper,
-  Creeper,
-  Eater,
-  Pooper,
-  Poo,
-} from "./EnemyCat.js";
+import { EnemieCat, Jumper, Creeper, Eater, Pooper, Poo } from "./EnemyCat.js";
 import { Catnip, PowerDrink, PowerUp } from "./Item.js";
 
 export const canvas = document.getElementById("canvas");
@@ -18,7 +11,7 @@ let intervalId;
 export let frame = 0;
 export let score = 0;
 export const enemieCatArray = [];
-export const catNipArray = []
+export const catNipArray = [];
 export const itemArray = [];
 const enemieCatClasses = [Jumper, Creeper, Pooper, Eater];
 export const catSoundItem = new Audio("./sounds/catSoundItem.mp3");
@@ -36,7 +29,7 @@ function updateGame() {
   updateEnemieCat();
   updateScore();
   itemUpdater();
-  catNitUpdater()
+  catNitUpdater();
 }
 
 export function findNearestItem(xValue) {
@@ -98,7 +91,6 @@ function catNitUpdater() {
     catNipArray.push(new Catnip(randomX, randomY));
   }
 
-
   for (let i = 0; i < catNipArray.length; i++) {
     catNipArray[i].draw();
     catNipArray[i].checkIfCollected();
@@ -110,12 +102,12 @@ function catNitUpdater() {
 }
 
 function itemUpdater() {
-
   if (frame % 1800 === 0) {
     const randomX = Math.floor(Math.random() * 600);
     const randomY = Math.floor(Math.random() * 600);
 
-    itemArray.push(new PowerDrink(randomX, randomY));}
+    itemArray.push(new PowerDrink(randomX, randomY));
+  }
 
   for (let i = 0; i < itemArray.length; i++) {
     itemArray[i].draw();
@@ -139,7 +131,7 @@ function updateEnemieCat() {
     }
     if (enemieCatArray[i].checkIfCollision()) {
       if (player.powerUp === "powerDrink") {
-        score += 100
+        score += 100;
         enemieCatArray.splice([i], 1);
       } else {
         checkGameOver();
@@ -149,13 +141,26 @@ function updateEnemieCat() {
 
   frame += 1;
   if (frame % 360 === 0) {
-    const randomX = Math.floor(Math.random() * 600);
-    const randomY = Math.floor(Math.random() * 600);
-    const randomClass = Math.floor(Math.random() * enemieCatClasses.length);
+    spawnEnemieCat();
 
-    enemieCatArray.push(new enemieCatClasses[randomClass](randomX, randomY));
   }
 }
+
+function spawnEnemieCat() {
+  const randomX = Math.floor(Math.random() * 600);
+  const randomY = Math.floor(Math.random() * 600);
+  const randomClass = Math.floor(Math.random() * enemieCatClasses.length);
+  if (
+    Math.abs(randomX - player.x) > 100 &&
+    Math.abs(randomX - player.x) > 100
+  ) {
+    enemieCatArray.push(new enemieCatClasses[randomClass](randomX, randomY));
+  } else {
+    spawnEnemieCat();
+  }
+}
+
+
 
 function stop() {
   clearInterval(intervalId);
@@ -230,14 +235,14 @@ export const player = new CatCharacter();
 // event listener / player controler // animations
 
 document.getElementById("startBtn").addEventListener("click", () => {
- setTimeout(()=>{
-  startGame();
-  backGroundMusic.play();
- },2000) 
- 
- document.getElementById("startBtn").style.display = 'none'
- document.getElementById("headline").style.display = 'none'
-  animateIntroStart()
+  setTimeout(() => {
+    startGame();
+    backGroundMusic.play();
+  }, 2000);
+
+  document.getElementById("startBtn").style.display = "none";
+  document.getElementById("headline").style.display = "none";
+  animateIntroStart();
 });
 
 document.addEventListener("keydown", (event) => {
@@ -256,7 +261,6 @@ document.addEventListener("keydown", (event) => {
       break;
   }
 });
-
 
 document
   .getElementById("restartBtn")
@@ -290,94 +294,81 @@ const interValStart = setInterval(() => {
   }
 }, 10);
 
-
-function animateIntroStart(){
+function animateIntroStart() {
   let rotation = 0;
-let rotationRel = rotation % 360;
-let rounds = 0;
-const interValStart = setInterval(() => {
-  if (rotationRel <= 360) {
-    rotation += 2;
+  let rotationRel = rotation % 360;
+  let rounds = 0;
+  const interValStart = setInterval(() => {
+    if (rotationRel <= 360) {
+      rotation += 2;
 
-    document.getElementById("introImage").style.WebkitTransitionDuration =
-      "0.1ms";
-    document.getElementById(
-      "introImage"
-    ).style.webkitTransform = `rotate(${rotation}deg)`;
-    document.getElementById("introImage").animate(
-      {
-        
-        width: "2500px",
-        height: "2500px",
-      },
-      30000
-    );
-  }
-  if (rotation % 360 === 0) {
-    rounds++;
-  }
-  if (rounds === 1) {
-    clearInterval(interValStart);
-  }
-}, 10);
+      document.getElementById("introImage").style.WebkitTransitionDuration =
+        "0.1ms";
+      document.getElementById(
+        "introImage"
+      ).style.webkitTransform = `rotate(${rotation}deg)`;
+      document.getElementById("introImage").animate(
+        {
+          width: "2500px",
+          height: "2500px",
+        },
+        30000
+      );
+    }
+    if (rotation % 360 === 0) {
+      rounds++;
+    }
+    if (rounds === 1) {
+      clearInterval(interValStart);
+    }
+  }, 10);
 }
-
 
 // rewrite this as a canvas thing, then the positioning will be no problem
 
-export function animationPowerUp(){
-  let one = document.getElementById('animationPowerUpImgOne')
-  let two = document.getElementById('animationPowerUpImgTwo')
-  let three = document.getElementById('animationPowerUpImgThree')
-  let four = document.getElementById('animationPowerUpImgFour')
-  one.style.display = 'flex'
-  setTimeout(()=>{
-    two.style.display = 'block'
-  },700)
-  setTimeout(()=>{
-    one.style.display = 'none'
+export function animationPowerUp() {
+  let one = document.getElementById("animationPowerUpImgOne");
+  let two = document.getElementById("animationPowerUpImgTwo");
+  let three = document.getElementById("animationPowerUpImgThree");
+  let four = document.getElementById("animationPowerUpImgFour");
+  one.style.display = "flex";
+  setTimeout(() => {
+    two.style.display = "block";
+  }, 700);
+  setTimeout(() => {
+    one.style.display = "none";
+  }, 700);
+  setTimeout(() => {
+    two.style.display = "none";
+  }, 1400);
+  setTimeout(() => {
+    three.style.display = "block";
+  }, 1400);
+  setTimeout(() => {
+    three.style.display = "none";
+  }, 2100);
+  setTimeout(() => {
+    three.style.display = "block";
+  }, 1400);
+  setTimeout(() => {
+    three.style.display = "none";
+  }, 2100);
+  setTimeout(() => {
+    four.style.display = "block";
+  }, 2100);
+  setTimeout(() => {
+    four.style.display = "none";
+  }, 2800);
+  // }
+  // const canvasAnimation = document.getElementById("canvasAnimation")
+  // const ctxAnimation = canvasAnimation.getContext("2d")
+  // export function animationPowerUp(){
+  //   const firstImage = new Image
+  //   firstImage.src = './images/animationPowerUpFrame00.png'
+  //   firstImage.addEventListener("load", (e) => {
+  //     setInterval(function () {ctxAnimation.drawImage(firstImage, 200,200,200,200)}, 20);
 
-  },700)
-  setTimeout(()=>{
-    two.style.display = 'none'
-
-  },1400)
-  setTimeout(()=>{
-    three.style.display = 'block'
-
-  },1400)
-  setTimeout(()=>{
-    three.style.display = 'none'
-
-  },2100)
-  setTimeout(()=>{
-    three.style.display = 'block'
-
-  },1400)
-  setTimeout(()=>{
-    three.style.display = 'none'
-
-  },2100)
-  setTimeout(()=>{
-    four.style.display = 'block'
-
-  },2100)
-  setTimeout(()=>{
-    four.style.display = 'none'
-
-  },2800)
-// }
-// const canvasAnimation = document.getElementById("canvasAnimation")
-// const ctxAnimation = canvasAnimation.getContext("2d")
-// export function animationPowerUp(){
-//   const firstImage = new Image 
-//   firstImage.src = './images/animationPowerUpFrame00.png'
-//   firstImage.addEventListener("load", (e) => {
-//     setInterval(function () {ctxAnimation.drawImage(firstImage, 200,200,200,200)}, 20);
-
-    
-//   }); // draw first image -> set interval to keep drawing first image?
+  //   }); // draw first image -> set interval to keep drawing first image?
   // setTimeOut to terminate the interval of first image
   // setTimteOut to draw second image
 }
-
