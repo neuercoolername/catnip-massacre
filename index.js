@@ -160,7 +160,7 @@ class CatCharacter {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "/images/mainCatCharacter.png";
+    newImage.src = "./images/mainCatCharacter.png";
   }
   draw() {
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
