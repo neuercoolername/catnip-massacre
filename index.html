@@ -15,18 +15,56 @@
   </head>
   <body>
     <div id="intro">
-        <div id="imgDiv">
-            <img id="introImage" src="/images/background_intro.png" alt="">
-
-        </div>
+      <div id="imgDiv">
+        <img id="introImage" src="/images/background_intro.png" alt="" />
+      </div>
       <h1 id="headline">CATNIP MASSACRE</h1>
       <button id="startBtn">START</button>
     </div>
-    <canvas id="canvas" width="700" height="700"></canvas>
+    <div id="canvasDiv">
+    <canvas id="canvas" width="700" height="700">
+      
+  
+
+    </canvas>
+    
+    <!-- <canvas id="canvasAnimation" width="700" height="700"></canvas> -->
+    
+
+    </div>
+    <div id="animationPowerUpDivOne">
+      <img
+        id="animationPowerUpImgOne"
+        src="./images/animationPowerUpFrame01.png"
+        alt=""
+      />
+    </div>
+    <div id="animationPowerUpDivTwo">
+      <img
+        id="animationPowerUpImgTwo"
+        src="./images/animationPowerUpFrame02.png"
+        alt=""
+      />
+    </div>
+    <div id="animationPowerUpDivThree">
+      <img
+        id="animationPowerUpImgThree"
+        src="./images/animationPowerUpFrame03.png"
+        alt=""
+      />
+    </div>
+    <div id="animationPowerUpDivFour">
+      <img
+        id="animationPowerUpImgFour"
+        src="./images/animationPowerUpFrame04.png"
+        alt=""
+      />
+    </div>
+  
     <div id="endScreen">
-        <h1>GAME OVER</h1>
-        <p>Your score:<span>0</span></p>
-        <button id="restartBtn">Restart</button>
+      <h1>GAME OVER</h1>
+      <p>Your score:<span>0</span></p>
+      <button id="restartBtn">Restart</button>
     </div>
 
     <script src="index.js" type="module"></script>

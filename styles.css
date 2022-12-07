@@ -10,10 +10,10 @@ html,body {
 }
 
 #intro {
-    /* background-image: url(images/background_intro.png); */
-    /* background-position: center;  */
-    /* background-repeat: no-repeat;  */
-    /* background-size: cover;  */
+    background-image: url('./images/background game.png');
+    background-position: center; 
+    background-repeat: no-repeat; 
+    background-size: cover; 
     background-color: red;
     margin: 0 auto;
     width: 700px;
@@ -61,8 +61,19 @@ html,body {
     margin: 0 auto;
     width: 700px;
     height: 700px;
-
+    z-index: 0;
+    position: relative;
 }
+
+/* #canvasAnimation {
+    display:none;
+    margin: 0 auto;
+    width: 700px;
+    height: 700px;
+    z-index: 1;
+    position: absolute;
+} */
+
 
 
 #endScreen{
@@ -119,3 +130,37 @@ html,body {
     width: 1px;
     height: 1px;
 }
+
+/* #animationDiv{
+    /* margin: 0 auto;
+    width: 700px;
+    height: 700px; */
+    /* z-index: 1;
+
+    position: absolute; */
+/* }  */
+
+#animationPowerUpImgOne,
+#animationPowerUpImgTwo,
+#animationPowerUpImgThree,
+#animationPowerUpImgFour
+
+{   
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+    width: 700px;
+    height: 700px; 
+    margin: 0 auto;
+    /* position:fixed; */
+    /* top:0; */
+    /* left:50vw; */
+    position: fixed;
+
+top: 50%;
+left: 50%;
+margin-top: -370px; /* Negative half of height. */
+margin-left: -350px; /* Negative half of width. */
+    display:none;
+}
+

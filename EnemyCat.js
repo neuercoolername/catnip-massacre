@@ -6,6 +6,7 @@ import {
   enemieCatArray,
   findNearestItem,
   itemArray,
+  catFightSound,
 } from "./index.js";
 
 class EnemieCat {
@@ -20,16 +21,16 @@ class EnemieCat {
     }
   }
   left() {
-    return this.x - 10;
+    return this.x - 20;
   }
   right() {
-    return this.x + 10;
+    return this.x + 20;
   }
   top() {
-    return this.y - 10;
+    return this.y - 20;
   }
   bottom() {
-    return this.y + 10;
+    return this.y + 20;
   }
   checkIfCollision() {
     if (
@@ -40,6 +41,16 @@ class EnemieCat {
         player.left() > this.right()
       )
     ) {
+      if (player.powerUp != "powerDrink") {
+        const fightCloud = new Image();
+        fightCloud.addEventListener("load", () => {
+          this.fightCloudImg = fightCloud;
+        });
+        fightCloud.src = "./images/fightCloud.png";
+        ctx.drawImage(this.fightCloudImg, this.x - 100, this.y - 50, 300, 171);
+      }
+      catFightSound.play();
+
       return true;
     }
   }
@@ -204,15 +215,15 @@ class Eater extends EnemieCat {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "./images/enemieCat04.png";
+    newImage.src = "./images/enemieCat05.png";
   }
   move() {
-    if(itemArray.length>0){
-        const nearestItem = findNearestItem(this.x)
-    const nearestX = nearestItem[0]
-    const nearestY = nearestItem[1]
+    if (itemArray.length > 0) {
+      const nearestItem = findNearestItem(this.x);
+      const nearestX = nearestItem[0];
+      const nearestY = nearestItem[1];
 
-        if (nearestY > this.y) {
+      if (nearestY > this.y) {
         this.y += 1;
       }
 
@@ -226,32 +237,8 @@ class Eater extends EnemieCat {
         this.x -= 1;
       }
     }
-    }
-    
-
- 
-
-
-    // so we dont want the nearest Y but the corresponding Y
-    // const nearestItem = findNearestItem(this.x, this.y);
-    // const nearestX = nearestItem[0];
-    // const nearestY = nearestItem[1];
-    // console.log(
-    //   "this.y",
-    //   this.y,
-    //   "this.x",
-    //   this.x,
-    // //   "nearestItem",
-    // //   nearestItem,
-    //   "nearestX",
-    //   nearestX,
-    //   "nearestY",
-    //   nearestY
-    // );
-
-    // while (nearestY != this.y) {
-  
   }
-
+ 
+}
 
 export { EnemieCat, Jumper, Creeper, Pooper, Poo, Eater };

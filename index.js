@@ -1,22 +1,32 @@
-import {EnemieCat,Jumper,Creeper,Eater,Pooper,Poo} from './enemieCatClasses.js'
-import {Catnip,PowerDrink,PowerUp} from './itemClasses.js'
-
+import {
+  EnemieCat,
+  Jumper,
+  Creeper,
+  Eater,
+  Pooper,
+  Poo,
+} from "./EnemyCat.js";
+import { Catnip, PowerDrink, PowerUp } from "./Item.js";
 
 export const canvas = document.getElementById("canvas");
 export const ctx = canvas.getContext("2d");
 
 const backgroundImage = new Image();
-backgroundImage.src = "/images/background game.png";
+backgroundImage.src = "./images/background game.png";
 
 let intervalId;
 export let frame = 0;
 export let score = 0;
 export const enemieCatArray = [];
 export const itemArray = [];
-const enemieCatClasses = [/* Jumper, Creeper, Pooper, */Eater];
+const enemieCatClasses = [Jumper, Creeper, Pooper, Eater];
+export const catSoundItem = new Audio("./sounds/catSoundItem.mp3");
+export const catFightSound = new Audio("./sounds/catFight.wav");
+const backGroundMusic = new Audio("./sounds/soundtrack.mp3");
+backGroundMusic.volume = 0.07;
+backGroundMusic.loop = true;
 
-
-// functions
+/* game functions */
 
 function updateGame() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -25,58 +35,27 @@ function updateGame() {
   updateEnemieCat();
   updateScore();
   itemUpdater();
-  // findNearestItem(350)
-  // console.log(findNearestItem(177))
 }
 
-export function findNearestItem(xValue){
-let smallestNumber = 700
-let correspondingNumber = 0
-let newArr = [smallestNumber,correspondingNumber]
-if(itemArray.length>0){
-  for(let i = 0; i<itemArray.length;i++){
-    if(Math.abs(itemArray[i].x -xValue) < smallestNumber){
-      smallestNumber = itemArray[i].x
-      correspondingNumber = itemArray[i].y
-      newArr = [smallestNumber,correspondingNumber]
+export function findNearestItem(xValue) {
+  let smallestNumber = 700;
+  let correspondingNumber = 0;
+  let newArr = [smallestNumber, correspondingNumber];
+  if (itemArray.length > 0) {
+    for (let i = 0; i < itemArray.length; i++) {
+      if (Math.abs(itemArray[i].x - xValue) < smallestNumber) {
+        smallestNumber = itemArray[i].x;
+        correspondingNumber = itemArray[i].y;
+        newArr = [smallestNumber, correspondingNumber];
+      }
     }
-    
+    return newArr;
   }
-  return newArr
 }
 
-// console.log(newArr)
-
-
-// //  console.log(itemArray)
-//   let xArr = []
-//   // let yArr = []
-//   let nearestX
-//   // let nearestY
-//   for(let i=0;i<itemArray.length;i++){
-//     xArr.push(itemArray[i].x)
-    
-//   }
-//   if(xArr.length > 0){
-//     nearestX = xArr.reduce((prev, curr) => Math.abs(curr - x) < Math.abs(prev - x) ? curr : prev);
-
-//   }
-  // for(let i=0;i<itemArray.length;i++){
-  //   yArr.push(itemArray[i].y)
-    
-  // }
-  // if(yArr.length > 0){
-  //   nearestY = yArr.reduce((prev, curr) => Math.abs(curr - y) < Math.abs(prev - y) ? curr : prev);
-
-  // }
-
-//  return [nearestX]
+export function upTickScore() {
+  score += 50;
 }
-
-
-export function upTickScore(){
-  score += 50
-} 
 
 function startGame() {
   document.querySelector("#intro").style.display = "none";
@@ -86,7 +65,6 @@ function startGame() {
   player.draw();
   intervalId = setInterval(updateGame, 20);
 }
-
 
 function drawBackground() {
   ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
@@ -99,7 +77,6 @@ function updateScore() {
 }
 
 function checkGameOver() {
- 
   stop();
 
   const points = Math.floor(frames / 10);
@@ -107,11 +84,9 @@ function checkGameOver() {
     document.querySelector("#endScreen").style.display = "flex";
     document.querySelector("#canvas").style.display = "none";
     document.querySelector("#endScreen span").textContent = score;
-  }, 1200);
+  }, 2500);
   // }
 }
-
-
 
 function itemUpdater() {
   if (frame % 180 === 0) {
@@ -130,7 +105,8 @@ function itemUpdater() {
   for (let i = 0; i < itemArray.length; i++) {
     itemArray[i].draw();
     itemArray[i].checkIfCollected();
-    if (itemArray[i].checkIfCollected()) {
+    itemArray[i].checkIfCollectedByEnemie();
+    if (itemArray[i].isCollected) {
       itemArray.splice([i], 1);
     }
   }
@@ -148,13 +124,13 @@ function updateEnemieCat() {
     }
     if (enemieCatArray[i].checkIfCollision()) {
       if (player.powerUp === "powerDrink") {
+        score += 100
         enemieCatArray.splice([i], 1);
       } else {
         checkGameOver();
       }
     }
   }
-
 
   frame += 1;
   if (frame % 360 === 0) {
@@ -170,12 +146,12 @@ function stop() {
   clearInterval(intervalId);
 }
 
-// classes
+/* main Character class */
 
 class CatCharacter {
   constructor() {
-    this.x = 220;
-    this.y = canvas.height - 70;
+    this.x = 350;
+    this.y = 350;
     this.width = 42;
     this.height = 50;
     this.powerUp = "";
@@ -197,9 +173,8 @@ class CatCharacter {
     newImage.src = src;
     this.width = width;
     this.height = height;
-    
-      this.powerUp = powerUp;
-    
+
+    this.powerUp = powerUp;
   }
   moveLeft() {
     if (this.x > 0) {
@@ -231,17 +206,23 @@ class CatCharacter {
     return this.y - this.height / 3;
   }
   bottom() {
-    return this.y + this.height /1.3 ;
+    return this.y + this.height / 1.3;
   }
 }
 
 export const player = new CatCharacter();
 
-
-// event listener / player controler
+// event listener / player controler // animations
 
 document.getElementById("startBtn").addEventListener("click", () => {
+ setTimeout(()=>{
   startGame();
+  backGroundMusic.play();
+ },2000) 
+ 
+ document.getElementById("startBtn").style.display = 'none'
+ document.getElementById("headline").style.display = 'none'
+  animateIntroStart()
 });
 
 document.addEventListener("keydown", (event) => {
@@ -261,38 +242,127 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-// document.getElementById("startBtn").addEventListener("mouseover", () => {
-//   document.getElementById("intro").style.backgroundColor = "red";
-// });
-// document.getElementById("startBtn").addEventListener("mouseout", () => {
-//   document.getElementById("intro").style.backgroundColor = "transparent";
-// });
+
 document
   .getElementById("restartBtn")
   .addEventListener("click", () => location.reload());
 
+let rotation = 0;
+let rotationRel = rotation % 360;
+let rounds = 0;
+const interValStart = setInterval(() => {
+  if (rotationRel <= 360) {
+    rotation += 2;
 
-let rotation = 0
-let rotationRel = rotation % 360
-let rounds = 0
-const interValStart = setInterval(()=>{
+    document.getElementById("introImage").style.WebkitTransitionDuration =
+      "0.1ms";
+    document.getElementById(
+      "introImage"
+    ).style.webkitTransform = `rotate(${rotation}deg)`;
+    document.getElementById("introImage").animate(
+      {
+        width: "700px",
+        height: "700px",
+      },
+      50000
+    );
+  }
+  if (rotation % 360 === 0) {
+    rounds++;
+  }
+  if (rounds === 1) {
+    clearInterval(interValStart);
+  }
+}, 10);
 
-  if(rotationRel<=360){
-  rotation += 2
+
+function animateIntroStart(){
+  let rotation = 0;
+let rotationRel = rotation % 360;
+let rounds = 0;
+const interValStart = setInterval(() => {
+  if (rotationRel <= 360) {
+    rotation += 2;
+
+    document.getElementById("introImage").style.WebkitTransitionDuration =
+      "0.1ms";
+    document.getElementById(
+      "introImage"
+    ).style.webkitTransform = `rotate(${rotation}deg)`;
+    document.getElementById("introImage").animate(
+      {
+        
+        width: "2500px",
+        height: "2500px",
+      },
+      30000
+    );
+  }
+  if (rotation % 360 === 0) {
+    rounds++;
+  }
+  if (rounds === 1) {
+    clearInterval(interValStart);
+  }
+}, 10);
+}
+
+
+// rewrite this as a canvas thing, then the positioning will be no problem
+
+export function animationPowerUp(){
+  let one = document.getElementById('animationPowerUpImgOne')
+  let two = document.getElementById('animationPowerUpImgTwo')
+  let three = document.getElementById('animationPowerUpImgThree')
+  let four = document.getElementById('animationPowerUpImgFour')
+  one.style.display = 'flex'
+  setTimeout(()=>{
+    two.style.display = 'block'
+  },700)
+  setTimeout(()=>{
+    one.style.display = 'none'
+
+  },700)
+  setTimeout(()=>{
+    two.style.display = 'none'
+
+  },1400)
+  setTimeout(()=>{
+    three.style.display = 'block'
+
+  },1400)
+  setTimeout(()=>{
+    three.style.display = 'none'
+
+  },2100)
+  setTimeout(()=>{
+    three.style.display = 'block'
+
+  },1400)
+  setTimeout(()=>{
+    three.style.display = 'none'
+
+  },2100)
+  setTimeout(()=>{
+    four.style.display = 'block'
+
+  },2100)
+  setTimeout(()=>{
+    four.style.display = 'none'
+
+  },2800)
+// }
+// const canvasAnimation = document.getElementById("canvasAnimation")
+// const ctxAnimation = canvasAnimation.getContext("2d")
+// export function animationPowerUp(){
+//   const firstImage = new Image 
+//   firstImage.src = './images/animationPowerUpFrame00.png'
+//   firstImage.addEventListener("load", (e) => {
+//     setInterval(function () {ctxAnimation.drawImage(firstImage, 200,200,200,200)}, 20);
+
     
-    document.getElementById("introImage").style.WebkitTransitionDuration='0.1ms';
-  document.getElementById("introImage").style.webkitTransform = `rotate(${rotation}deg)`
-  document.getElementById("introImage").animate({
-    width: '700px',
-    height: "700px", 
-     }, 50000 );
-  }
-  if(rotation % 360 === 0){
-    rounds++
-  }
-  if(rounds === 1) {
-    clearInterval(interValStart)
-  }
- 
- 
-},10)
+//   }); // draw first image -> set interval to keep drawing first image?
+  // setTimeOut to terminate the interval of first image
+  // setTimteOut to draw second image
+}
+
