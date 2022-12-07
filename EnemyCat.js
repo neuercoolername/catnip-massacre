@@ -63,7 +63,7 @@ class Jumper extends EnemieCat {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "/images/enemieCat01.png";
+    newImage.src = "./images/enemieCat01.png";
   }
   draw() {
     if (this.img) {
@@ -101,7 +101,7 @@ class Creeper extends EnemieCat {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "/images/enemieCat02.png";
+    newImage.src = "./images/enemieCat02.png";
   }
   draw() {
     if (this.img) {
@@ -149,7 +149,7 @@ class Pooper extends EnemieCat {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "/images/enemieCat04.png";
+    newImage.src = "./images/enemieCat04.png";
   }
   draw() {
     if (this.img) {
@@ -175,7 +175,7 @@ class Poo {
     newImage.addEventListener("load", () => {
       this.img = newImage;
     });
-    newImage.src = "/images/turd.png";
+    newImage.src = "./images/turd.png";
   }
   draw() {
     if (this.img) {
