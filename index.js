@@ -95,7 +95,7 @@ function itemUpdater() {
 
     itemArray.push(new Catnip(randomX, randomY));
   }
-  if (frame % 180 === 0) {
+  if (frame % 1800 === 0) {
     const randomX = Math.floor(Math.random() * 600);
     const randomY = Math.floor(Math.random() * 600);
 
