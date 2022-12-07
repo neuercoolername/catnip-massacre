@@ -152,7 +152,7 @@ function spawnEnemieCat() {
   const randomClass = Math.floor(Math.random() * enemieCatClasses.length);
   if (
     Math.abs(randomX - player.x) > 100 &&
-    Math.abs(randomY - player.Y) > 100
+    Math.abs(randomY - player.y) > 100
   ) {
     enemieCatArray.push(new enemieCatClasses[randomClass](randomX, randomY));
   } else {
