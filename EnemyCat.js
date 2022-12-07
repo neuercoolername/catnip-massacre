@@ -6,6 +6,7 @@ import {
   enemieCatArray,
   findNearestItem,
   itemArray,
+  catNipArray,
   catFightSound,
 } from "./index.js";
 
@@ -218,7 +219,7 @@ class Eater extends EnemieCat {
     newImage.src = "./images/enemieCat05.png";
   }
   move() {
-    if (itemArray.length > 0) {
+    if (catNipArray.length > 0) {
       const nearestItem = findNearestItem(this.x);
       const nearestX = nearestItem[0];
       const nearestY = nearestItem[1];

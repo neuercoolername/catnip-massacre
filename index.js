@@ -18,6 +18,7 @@ let intervalId;
 export let frame = 0;
 export let score = 0;
 export const enemieCatArray = [];
+export const catNipArray = []
 export const itemArray = [];
 const enemieCatClasses = [Jumper, Creeper, Pooper, Eater];
 export const catSoundItem = new Audio("./sounds/catSoundItem.mp3");
@@ -35,17 +36,18 @@ function updateGame() {
   updateEnemieCat();
   updateScore();
   itemUpdater();
+  catNitUpdater()
 }
 
 export function findNearestItem(xValue) {
   let smallestNumber = 700;
   let correspondingNumber = 0;
   let newArr = [smallestNumber, correspondingNumber];
-  if (itemArray.length > 0) {
-    for (let i = 0; i < itemArray.length; i++) {
-      if (Math.abs(itemArray[i].x - xValue) < smallestNumber) {
-        smallestNumber = itemArray[i].x;
-        correspondingNumber = itemArray[i].y;
+  if (catNipArray.length > 0) {
+    for (let i = 0; i < catNipArray.length; i++) {
+      if (Math.abs(catNipArray[i].x - xValue) < smallestNumber) {
+        smallestNumber = catNipArray[i].x;
+        correspondingNumber = catNipArray[i].y;
         newArr = [smallestNumber, correspondingNumber];
       }
     }
@@ -88,24 +90,37 @@ function checkGameOver() {
   // }
 }
 
-function itemUpdater() {
+function catNitUpdater() {
   if (frame % 180 === 0) {
     const randomX = Math.floor(Math.random() * 600);
     const randomY = Math.floor(Math.random() * 600);
 
-    itemArray.push(new Catnip(randomX, randomY));
+    catNipArray.push(new Catnip(randomX, randomY));
   }
+
+
+  for (let i = 0; i < catNipArray.length; i++) {
+    catNipArray[i].draw();
+    catNipArray[i].checkIfCollected();
+    catNipArray[i].checkIfCollectedByEnemie();
+    if (catNipArray[i].isCollected) {
+      catNipArray.splice([i], 1);
+    }
+  }
+}
+
+function itemUpdater() {
+
   if (frame % 1800 === 0) {
     const randomX = Math.floor(Math.random() * 600);
     const randomY = Math.floor(Math.random() * 600);
 
-    itemArray.push(new PowerDrink(randomX, randomY));
-  }
+    itemArray.push(new PowerDrink(randomX, randomY));}
 
   for (let i = 0; i < itemArray.length; i++) {
     itemArray[i].draw();
     itemArray[i].checkIfCollected();
-    itemArray[i].checkIfCollectedByEnemie();
+    // itemArray[i].checkIfCollectedByEnemie();
     if (itemArray[i].isCollected) {
       itemArray.splice([i], 1);
     }

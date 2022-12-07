@@ -92,6 +92,7 @@ html,body {
 #endScreen h1{
     margin-bottom: 0;
     padding-bottom: 0;
+    margin-top: 0;
 }
 
 #endScreen p{
@@ -120,6 +121,12 @@ html,body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#endScreen img{
+    width: 100px;
+    transform: translateX(10px)
+
 }
 
 #introImage {
