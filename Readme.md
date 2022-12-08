@@ -1,6 +1,7 @@
 # Catnip Massacre
 
-![Alt text](../../../../../../../C:/Users/David/Desktop/IronHack/catnip%20massacre/game/images/background%20game.png)
+(./images/background%20game.png)
+
 
 [Click here to see deployed game](https://neuercoolername.github.io/catnip-massacre/)
 
