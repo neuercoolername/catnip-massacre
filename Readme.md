@@ -1,6 +1,6 @@
 # Catnip Massacre
 
-(./images/background%20game.png)
+![Getting Started](./images/background%20game.png)
 
 
 [Click here to see deployed game](https://neuercoolername.github.io/catnip-massacre/)
