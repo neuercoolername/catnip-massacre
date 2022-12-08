@@ -52,11 +52,7 @@ class EnemieCat {
         console.log(typeof this.fightCloudImg,this.fightCloudImg)
         ctx.drawImage(this.fightCloudImg, this.x - 100, this.y - 50, 300, 171);
 
-        // const fightCloud = new Image();
-
-        // fightCloud.addEventListener("load", (e) => {
-        //   ctx.drawImage(fightCloud, this.x - 100, this.y - 50, 300, 171);
-        // });
+ 
       }
       catFightSound.play();
 
@@ -120,7 +116,7 @@ class Creeper extends EnemieCat {
   move() {
     if (player.y > this.y) {
       if (player.powerUp === "powerDrink") {
-        this.y -= 1;
+        this.y -= 0.3;
       } else {
         this.y += 1;
       }
@@ -128,21 +124,21 @@ class Creeper extends EnemieCat {
 
     if (player.y < this.y) {
       if (player.powerUp === "powerDrink") {
-        this.y += 1;
+        this.y += 0.3;
       } else {
         this.y -= 1;
       }
     }
     if (player.x > this.x) {
       if (player.powerUp === "powerDrink") {
-        this.x -= 1;
+        this.x -= 0.3;
       } else {
         this.x += 1;
       }
     }
     if (player.x < this.x) {
       if (player.powerUp === "powerDrink") {
-        this.x += 1;
+        this.x += 0.3;
       } else {
         this.x -= 1;
       }

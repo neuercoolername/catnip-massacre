@@ -10,7 +10,7 @@ html,body {
 }
 
 #intro {
-    background-image: url('./images/background game.png');
+    background-image: url('../images/background game.png');
     background-position: center; 
     background-repeat: no-repeat; 
     background-size: cover; 
