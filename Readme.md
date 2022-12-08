@@ -19,7 +19,7 @@ Catnip Massacre is a game where you play a cat trying to gather as much Catnip a
 ## Backlog
 - different classes of other cats
 - a powerUp that lets you beat other cats
-- 
+
 
 
 ## Data structure
@@ -62,6 +62,6 @@ class PowerDrink extends PowerUp
 ## Links
 
 - [Trello Link](https://trello.com/b/8DvOgOlB/catnip-massacre)
-- [Slides Link](http://slides.com)
+- [Slides Link](https://slides.com/davidamberg/catnip-massacre)
 - [Github repository Link](https://github.com/neuercoolername/catnip-massacre)
 - [Deployment Link](https://neuercoolername.github.io/catnip-massacre/)

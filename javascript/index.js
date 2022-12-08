@@ -362,53 +362,7 @@ export function animationPowerUp() {
   setTimeout(() => {
     four.style.display = "none";
   }, 2800);
-  // }
-  // const canvasAnimation = document.getElementById("canvasAnimation")
-  // const ctxAnimation = canvasAnimation.getContext("2d")
-  // export function animationPowerUp(){
-  //   const firstImage = new Image
-  //   firstImage.src = './images/animationPowerUpFrame00.png'
-  //   firstImage.addEventListener("load", (e) => {
-  //     setInterval(function () {ctxAnimation.drawImage(firstImage, 200,200,200,200)}, 20);
 
-  //   }); // draw first image -> set interval to keep drawing first image?
-  // setTimeOut to terminate the interval of first image
-  // setTimteOut to draw second image
 }
 
 
-// export function animationPowerUp() {
-//   let one = document.getElementById("animationPowerUpImgOne");
-//   let two = document.getElementById("animationPowerUpImgTwo");
-//   let three = document.getElementById("animationPowerUpImgThree");
-//   let four = document.getElementById("animationPowerUpImgFour");
-//   one.style.display = "flex";
-//   setTimeout(() => {
-//     two.style.display = "block";
-//   }, 700);
-//   setTimeout(() => {
-//     one.style.display = "none";
-//   }, 700);
-//   setTimeout(() => {
-//     two.style.display = "none";
-//   }, 1400);
-//   setTimeout(() => {
-//     three.style.display = "block";
-//   }, 1400);
-//   setTimeout(() => {
-//     three.style.display = "none";
-//   }, 2100);
-//   setTimeout(() => {
-//     three.style.display = "block";
-//   }, 1400);
-//   setTimeout(() => {
-//     three.style.display = "none";
-//   }, 2100);
-//   setTimeout(() => {
-//     four.style.display = "block";
-//   }, 2100);
-//   setTimeout(() => {
-//     four.style.display = "none";
-//   }, 2800);
-  
-// }
